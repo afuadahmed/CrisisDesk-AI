@@ -103,26 +103,39 @@ class ReportListCreateView(APIView):
         )
 
         report = Report.objects.create(
-        name=validated_data.get("name", ""),
-        contact=validated_data.get("contact", ""),
-        location=validated_data["location"],
-        description=validated_data["description"],
-        language=validated_data.get("language", "unknown"),
-        category=ai_result["category"],
-        urgency=ai_result["urgency"],
-        summary=ai_result["summary"],
-        suggested_action=ai_result["suggestedAction"],
-        confidence=ai_result["confidence"],
-        possible_duplicate=duplicate_result["possible_duplicate"],
-        duplicate_similarity=duplicate_result["similarity_score"],
-        matched_report=duplicate_result["matched_report"],
-    )
+            name=validated_data.get("name", ""),
+            contact=validated_data.get("contact", ""),
+            location=validated_data["location"],
+            description=validated_data["description"],
+            language=validated_data.get("language", "unknown"),
+            category=ai_result["category"],
+            urgency=ai_result["urgency"],
+            summary=ai_result["summary"],
+            suggested_action=ai_result["suggestedAction"],
+            confidence=ai_result["confidence"],
+            possible_duplicate=duplicate_result["possible_duplicate"],
+            duplicate_similarity=duplicate_result["similarity_score"],
+            matched_report=duplicate_result["matched_report"],
+        )
+
+        if report.possible_duplicate and report.matched_report:
+            incident_root = (
+                report.matched_report.incident
+                or report.matched_report
+            )
+
+            report.incident = incident_root
+        else:
+            report.incident = report
+
+        report.save(update_fields=["incident"])
 
         ReportActivity.objects.create(
-    report=report,
-    action="created",
-    new_status=report.status,
-)
+            report=report,
+            action="created",
+            new_status=report.status,
+        )
+
         response_serializer = ReportSerializer(report)
 
         return Response(

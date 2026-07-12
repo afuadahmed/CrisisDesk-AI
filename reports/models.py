@@ -97,6 +97,14 @@ class Report(models.Model):
         blank=True
     )
 
+    incident = models.ForeignKey(
+    "self",
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name="incident_reports"
+)
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,

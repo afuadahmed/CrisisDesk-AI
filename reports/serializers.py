@@ -68,6 +68,21 @@ class ReportSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    incidentId = serializers.UUIDField(
+    source="incident.id",
+    read_only=True,
+    allow_null=True,
+    )
+
+    incidentReportCount = serializers.SerializerMethodField()
+
+
+    def get_incidentReportCount(self, obj):
+        if not obj.incident:
+            return 1
+
+        return obj.incident.incident_reports.count()
+
     class Meta:
         model = Report
         fields = "__all__"
