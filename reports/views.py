@@ -1,14 +1,68 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
+from django.shortcuts import get_object_or_404
 
 from .models import Report
 from .serializers import ReportSerializer
 from .services.ai_service import classify_report
 from .services.duplicate_service import detect_duplicate
 
-
+class ReportPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 100
+    
 class ReportListCreateView(APIView):
+
+    def get(self, request):
+        reports = Report.objects.all()
+
+        category = request.query_params.get("category")
+        urgency = request.query_params.get("urgency")
+        report_status = request.query_params.get("status")
+        ordering = request.query_params.get(
+            "ordering",
+            "-created_at"
+        )
+
+        if category:
+            reports = reports.filter(category=category)
+
+        if urgency:
+            reports = reports.filter(urgency=urgency)
+
+        if report_status:
+            reports = reports.filter(status=report_status)
+
+        allowed_ordering = [
+            "created_at",
+            "-created_at",
+            "confidence",
+            "-confidence",
+        ]
+
+        if ordering not in allowed_ordering:
+            ordering = "-created_at"
+
+        reports = reports.order_by(ordering)
+
+        paginator = ReportPagination()
+        page = paginator.paginate_queryset(
+            reports,
+            request,
+            view=self
+        )
+
+        serializer = ReportSerializer(page, many=True)
+
+        return paginator.get_paginated_response(
+            {
+                "success": True,
+                "data": serializer.data,
+            }
+        )
 
     def post(self, request):
         serializer = ReportSerializer(data=request.data)
@@ -69,4 +123,61 @@ class ReportListCreateView(APIView):
                 "data": response_serializer.data,
             },
             status=status.HTTP_201_CREATED,
+        )
+    
+class ReportDetailView(APIView):
+
+    def get(self, request, report_id):
+        report = get_object_or_404(
+            Report,
+            id=report_id
+        )
+
+        serializer = ReportSerializer(report)
+
+        return Response(
+            {
+                "success": True,
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class ReportStatusUpdateView(APIView):
+
+    def patch(self, request, report_id):
+        report = get_object_or_404(
+            Report,
+            id=report_id
+        )
+
+        new_status = request.data.get("status")
+
+        valid_statuses = [
+            choice[0]
+            for choice in Report.STATUS_CHOICES
+        ]
+
+        if new_status not in valid_statuses:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Invalid report status.",
+                    "validStatuses": valid_statuses,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        report.status = new_status
+        report.save(update_fields=["status", "updated_at"])
+
+        serializer = ReportSerializer(report)
+
+        return Response(
+            {
+                "success": True,
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
         )
