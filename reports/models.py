@@ -108,3 +108,47 @@ class Report(models.Model):
 
     def __str__(self):
         return f"{self.category} - {self.location}"
+    
+class ReportActivity(models.Model):
+
+    ACTION_CHOICES = [
+        ('created', 'Report Created'),
+        ('status_changed', 'Status Changed'),
+    ]
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+
+    report = models.ForeignKey(
+        Report,
+        on_delete=models.CASCADE,
+        related_name='activities'
+    )
+
+    action = models.CharField(
+        max_length=30,
+        choices=ACTION_CHOICES
+    )
+
+    old_status = models.CharField(
+        max_length=20,
+        blank=True
+    )
+
+    new_status = models.CharField(
+        max_length=20,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.report.id} - {self.action}"

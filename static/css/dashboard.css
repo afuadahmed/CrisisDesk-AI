@@ -493,3 +493,63 @@ body.modal-open {
     align-items: center;
     gap: 10px;
 }
+
+/* Activity Timeline */
+
+.activity-section {
+    margin-top: 30px;
+}
+
+.activity-timeline {
+    margin-top: 20px;
+}
+
+.activity-item {
+    position: relative;
+    display: flex;
+    gap: 18px;
+    padding-bottom: 28px;
+}
+
+.activity-item:last-child {
+    padding-bottom: 0;
+}
+
+.activity-item:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 18px;
+    width: 2px;
+    height: calc(100% - 8px);
+    background: #263b55;
+}
+
+.activity-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.activity-content strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.activity-content p {
+    margin: 0 0 6px;
+    color: #cbd5e1;
+}
+
+.activity-content span {
+    color: #7890b3;
+    font-size: 14px;
+}
+
+.activity-empty {
+    color: #7890b3;
+}

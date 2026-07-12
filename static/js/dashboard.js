@@ -301,6 +301,42 @@ async function openReportModal(reportId) {
         } else {
             duplicateWarning.classList.remove("active");
         }
+        const activityContainer =
+    document.getElementById("modalActivities");
+
+const activities = report.activities || [];
+
+if (activities.length === 0) {
+    activityContainer.innerHTML = `
+        <p class="activity-empty">
+            No activity recorded.
+        </p>
+    `;
+} else {
+    activityContainer.innerHTML = activities
+        .map(activity => `
+            <div class="activity-item">
+                <div class="activity-dot"></div>
+
+                <div class="activity-content">
+                    <strong>
+                        ${escapeHtml(activity.actionDisplay)}
+                    </strong>
+
+                    <p>
+                        ${formatStatus(activity.oldStatus)}
+                        →
+                        ${formatStatus(activity.newStatus)}
+                    </p>
+
+                    <span>
+                        ${formatActivityTime(activity.createdAt)}
+                    </span>
+                </div>
+            </div>
+        `)
+        .join("");
+}
 
         modal.classList.add("active");
         document.body.classList.add("modal-open");
@@ -311,6 +347,15 @@ async function openReportModal(reportId) {
     }
 }
 
+function formatActivityTime(dateValue) {
+    if (!dateValue) {
+        return "-";
+    }
+
+    const date = new Date(dateValue);
+
+    return date.toLocaleString();
+}
 
 function closeReportModal() {
     const modal = document.getElementById("reportModal");

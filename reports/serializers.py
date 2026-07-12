@@ -1,78 +1,91 @@
 from rest_framework import serializers
-from .models import Report
+
+from .models import Report, ReportActivity
 
 
-class ReportSerializer(serializers.ModelSerializer):
-
-    suggestedAction = serializers.CharField(
-        source='suggested_action',
-        read_only=True
-    )
-
-    possibleDuplicate = serializers.BooleanField(
-        source='possible_duplicate',
-        read_only=True
-    )
-
-    matchedReportId = serializers.UUIDField(
-        source='matched_report.id',
+class ReportActivitySerializer(serializers.ModelSerializer):
+    actionDisplay = serializers.CharField(
+        source="get_action_display",
         read_only=True,
-        allow_null=True
+    )
+
+    oldStatus = serializers.CharField(
+        source="old_status",
+        read_only=True,
+    )
+
+    newStatus = serializers.CharField(
+        source="new_status",
+        read_only=True,
     )
 
     createdAt = serializers.DateTimeField(
-        source='created_at',
-        read_only=True
+        source="created_at",
+        read_only=True,
+    )
+
+    class Meta:
+        model = ReportActivity
+        fields = [
+            "id",
+            "action",
+            "actionDisplay",
+            "oldStatus",
+            "newStatus",
+            "createdAt",
+        ]
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    suggestedAction = serializers.CharField(
+        source="suggested_action",
+        read_only=True,
+    )
+
+    possibleDuplicate = serializers.BooleanField(
+        source="possible_duplicate",
+        read_only=True,
+    )
+
+    matchedReportId = serializers.UUIDField(
+        source="matched_report_id",
+        read_only=True,
+        allow_null=True,
+    )
+
+    createdAt = serializers.DateTimeField(
+        source="created_at",
+        read_only=True,
     )
 
     updatedAt = serializers.DateTimeField(
-        source='updated_at',
-        read_only=True
+        source="updated_at",
+        read_only=True,
+    )
+
+    activities = ReportActivitySerializer(
+        many=True,
+        read_only=True,
     )
 
     class Meta:
         model = Report
-
         fields = [
-            'id',
-            'name',
-            'contact',
-            'location',
-            'description',
-            'language',
-            'category',
-            'urgency',
-            'summary',
-            'suggestedAction',
-            'confidence',
-            'possibleDuplicate',
-            'matchedReportId',
-            'status',
-            'createdAt',
-            'updatedAt',
+            "id",
+            "name",
+            "contact",
+            "location",
+            "description",
+            "language",
+            "category",
+            "urgency",
+            "summary",
+            "suggestedAction",
+            "confidence",
+            "possibleDuplicate",
+            "matchedReportId",
+            "status",
+            "createdAt",
+            "updatedAt",
+            "activities",
         ]
-
-        read_only_fields = [
-            'id',
-            'category',
-            'urgency',
-            'summary',
-            'confidence',
-            'status',
-        ]
-
-    def validate_description(self, value):
-        if not value or not value.strip():
-            raise serializers.ValidationError(
-                "Description is required and cannot be empty."
-            )
-
-        return value.strip()
-
-    def validate_location(self, value):
-        if not value or not value.strip():
-            raise serializers.ValidationError(
-                "Location is required and cannot be empty."
-            )
-
-        return value.strip()

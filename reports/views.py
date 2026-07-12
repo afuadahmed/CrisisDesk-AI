@@ -5,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
 
-from .models import Report
+from .models import Report, ReportActivity
 from .serializers import ReportSerializer
 from .services.ai_service import classify_report
 from .services.duplicate_service import detect_duplicate
@@ -116,6 +116,11 @@ class ReportListCreateView(APIView):
             matched_report=duplicate_result["matched_report"],
         )
 
+        ReportActivity.objects.create(
+    report=report,
+    action="created",
+    new_status=report.status,
+)
         response_serializer = ReportSerializer(report)
 
         return Response(
@@ -170,8 +175,18 @@ class ReportStatusUpdateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        old_status = report.status
+
         report.status = new_status
         report.save(update_fields=["status", "updated_at"])
+
+        if old_status != new_status:
+            ReportActivity.objects.create(
+                report=report,
+                action="status_changed",
+                old_status=old_status,
+                new_status=new_status,
+            )
 
         serializer = ReportSerializer(report)
 
