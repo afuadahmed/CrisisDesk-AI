@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 
 from .models import Report
 from .serializers import ReportSerializer
@@ -178,6 +179,57 @@ class ReportStatusUpdateView(APIView):
             {
                 "success": True,
                 "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+    
+class AnalyticsSummaryView(APIView):
+
+    def get(self, request):
+        reports = Report.objects.all()
+
+        total_reports = reports.count()
+
+        critical_reports = reports.filter(
+            urgency="critical"
+        ).count()
+
+        possible_duplicates = reports.filter(
+            possible_duplicate=True
+        ).count()
+
+        category_counts = {
+            item["category"]: item["count"]
+            for item in reports.values("category").annotate(
+                count=Count("id")
+            )
+        }
+
+        status_counts = {
+            item["status"]: item["count"]
+            for item in reports.values("status").annotate(
+                count=Count("id")
+            )
+        }
+
+        urgency_counts = {
+            item["urgency"]: item["count"]
+            for item in reports.values("urgency").annotate(
+                count=Count("id")
+            )
+        }
+
+        return Response(
+            {
+                "success": True,
+                "data": {
+                    "totalReports": total_reports,
+                    "criticalReports": critical_reports,
+                    "possibleDuplicates": possible_duplicates,
+                    "categories": category_counts,
+                    "statuses": status_counts,
+                    "urgencies": urgency_counts,
+                },
             },
             status=status.HTTP_200_OK,
         )
