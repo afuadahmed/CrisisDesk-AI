@@ -478,3 +478,18 @@ body.modal-open {
         padding: 16px;
     }
 }
+
+.live-text {
+    display: block;
+    margin-top: 4px;
+
+    color: #64748b;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

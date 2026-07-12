@@ -325,3 +325,16 @@ document.addEventListener("keydown", function (event) {
         closeReportModal();
     }
 });
+
+const AUTO_REFRESH_INTERVAL = 15000;
+
+setInterval(async function () {
+    const modal = document.getElementById("reportModal");
+
+    if (modal.classList.contains("active")) {
+        return;
+    }
+
+    await loadDashboard();
+
+}, AUTO_REFRESH_INTERVAL);
