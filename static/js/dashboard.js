@@ -1,5 +1,9 @@
 const reportList = document.getElementById("reportList");
 const refreshButton = document.getElementById("refreshButton");
+const categoryFilter = document.getElementById("categoryFilter");
+const urgencyFilter = document.getElementById("urgencyFilter");
+const statusFilter = document.getElementById("statusFilter");
+const orderingFilter = document.getElementById("orderingFilter");
 
 const totalReports = document.getElementById("totalReports");
 const criticalReports = document.getElementById("criticalReports");
@@ -31,9 +35,26 @@ async function loadReports() {
     `;
 
     try {
-        const response = await fetch(
-            "/api/reports?ordering=-created_at&page_size=20"
-        );
+        const params = new URLSearchParams();
+
+params.set("page_size", "20");
+params.set("ordering", orderingFilter.value);
+
+if (categoryFilter.value) {
+    params.set("category", categoryFilter.value);
+}
+
+if (urgencyFilter.value) {
+    params.set("urgency", urgencyFilter.value);
+}
+
+if (statusFilter.value) {
+    params.set("status", statusFilter.value);
+}
+
+const response = await fetch(
+    `/api/reports?${params.toString()}`
+);
 
         const result = await response.json();
         const reports = result.results.data;
@@ -216,6 +237,15 @@ refreshButton.addEventListener(
     "click",
     loadDashboard
 );
+
+[
+    categoryFilter,
+    urgencyFilter,
+    statusFilter,
+    orderingFilter
+].forEach(filter => {
+    filter.addEventListener("change", loadReports);
+});
 
 
 loadDashboard();
