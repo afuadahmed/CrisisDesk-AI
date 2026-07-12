@@ -553,3 +553,10 @@ body.modal-open {
 .activity-empty {
     color: #7890b3;
 }
+
+#modalDuplicateSimilarity {
+    display: block;
+    margin-top: 8px;
+    font-size: 14px;
+    opacity: 0.85;
+}

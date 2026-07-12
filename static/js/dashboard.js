@@ -21,7 +21,8 @@ async function loadAnalytics() {
 
         totalReports.textContent = result.data.totalReports;
         criticalReports.textContent = result.data.criticalReports;
-        possibleDuplicates.textContent = result.data.possibleDuplicates;
+        possibleDuplicates.textContent =
+            result.data.possibleDuplicates;
 
     } catch (error) {
         console.error("Analytics error:", error);
@@ -37,24 +38,24 @@ async function loadReports() {
     try {
         const params = new URLSearchParams();
 
-params.set("page_size", "20");
-params.set("ordering", orderingFilter.value);
+        params.set("page_size", "20");
+        params.set("ordering", orderingFilter.value);
 
-if (categoryFilter.value) {
-    params.set("category", categoryFilter.value);
-}
+        if (categoryFilter.value) {
+            params.set("category", categoryFilter.value);
+        }
 
-if (urgencyFilter.value) {
-    params.set("urgency", urgencyFilter.value);
-}
+        if (urgencyFilter.value) {
+            params.set("urgency", urgencyFilter.value);
+        }
 
-if (statusFilter.value) {
-    params.set("status", statusFilter.value);
-}
+        if (statusFilter.value) {
+            params.set("status", statusFilter.value);
+        }
 
-const response = await fetch(
-    `/api/reports?${params.toString()}`
-);
+        const response = await fetch(
+            `/api/reports?${params.toString()}`
+        );
 
         const result = await response.json();
         const reports = result.results.data;
@@ -88,9 +89,7 @@ function createReportCard(report) {
             class="report-card"
             onclick="handleReportCardClick(event, '${report.id}')"
         >
-
             <div class="report-top">
-
                 <div>
                     <h3>${escapeHtml(report.category)}</h3>
 
@@ -102,7 +101,6 @@ function createReportCard(report) {
                 <span class="badge ${urgencyClass}">
                     ${escapeHtml(report.urgency)}
                 </span>
-
             </div>
 
             <p class="report-summary">
@@ -115,21 +113,20 @@ function createReportCard(report) {
             </div>
 
             <div class="report-footer">
-
                 <div class="report-meta">
-
                     <span>
                         Confidence: ${report.confidence}
                     </span>
 
                     ${
                         report.possibleDuplicate
-                            ? `<span class="duplicate-warning">
-                                Possible Duplicate
-                               </span>`
+                            ? `
+                                <span class="duplicate-warning">
+                                    Possible Duplicate
+                                </span>
+                            `
                             : ""
                     }
-
                 </div>
 
                 <select
@@ -141,12 +138,11 @@ function createReportCard(report) {
                 >
                     ${createStatusOptions(report.status)}
                 </select>
-
             </div>
-
         </article>
     `;
 }
+
 
 function handleReportCardClick(event, reportId) {
     if (event.target.closest(".status-select")) {
@@ -180,8 +176,12 @@ function createStatusOptions(currentStatus) {
 
 
 function formatStatus(status) {
+    if (!status) {
+        return "-";
+    }
+
     return status
-        .replace("_", " ")
+        .replaceAll("_", " ")
         .replace(/\b\w/g, letter => letter.toUpperCase());
 }
 
@@ -220,7 +220,9 @@ async function updateReportStatus(reportId, newStatus) {
 
 function escapeHtml(value) {
     const div = document.createElement("div");
+
     div.textContent = value ?? "";
+
     return div.innerHTML;
 }
 
@@ -233,32 +235,20 @@ async function loadDashboard() {
 }
 
 
-refreshButton.addEventListener(
-    "click",
-    loadDashboard
-);
-
-[
-    categoryFilter,
-    urgencyFilter,
-    statusFilter,
-    orderingFilter
-].forEach(filter => {
-    filter.addEventListener("change", loadReports);
-});
-
-
-loadDashboard();
-
 async function openReportModal(reportId) {
     const modal = document.getElementById("reportModal");
 
     try {
-        const response = await fetch(`/api/reports/${reportId}`);
+        const response = await fetch(
+            `/api/reports/${reportId}`
+        );
+
         const result = await response.json();
 
         if (!response.ok || !result.success) {
-            throw new Error("Failed to load report details.");
+            throw new Error(
+                "Failed to load report details."
+            );
         }
 
         const report = result.data;
@@ -270,7 +260,7 @@ async function openReportModal(reportId) {
             report.urgency || "-";
 
         document.getElementById("modalStatus").textContent =
-            (report.status || "-").replace("_", " ");
+            formatStatus(report.status);
 
         document.getElementById("modalConfidence").textContent =
             report.confidence ?? "-";
@@ -281,7 +271,9 @@ async function openReportModal(reportId) {
         document.getElementById("modalSummary").textContent =
             report.summary || "-";
 
-        document.getElementById("modalSuggestedAction").textContent =
+        document.getElementById(
+            "modalSuggestedAction"
+        ).textContent =
             report.suggestedAction || "-";
 
         document.getElementById("modalDescription").textContent =
@@ -293,59 +285,101 @@ async function openReportModal(reportId) {
         document.getElementById("modalContact").textContent =
             report.contact || "Not provided";
 
+
         const duplicateWarning =
             document.getElementById("modalDuplicate");
 
+        const duplicateSimilarity =
+            document.getElementById(
+                "modalDuplicateSimilarity"
+            );
+
         if (report.possibleDuplicate) {
             duplicateWarning.classList.add("active");
+
+            const similarityScore =
+                report.duplicateSimilarity ??
+                report.duplicate_similarity;
+
+            if (
+                similarityScore !== null &&
+                similarityScore !== undefined
+            ) {
+                const similarityPercentage =
+                    (similarityScore * 100).toFixed(2);
+
+                duplicateSimilarity.textContent =
+                    `Similarity: ${similarityPercentage}%`;
+            } else {
+                duplicateSimilarity.textContent = "";
+            }
+
         } else {
             duplicateWarning.classList.remove("active");
+            duplicateSimilarity.textContent = "";
         }
+
+
         const activityContainer =
-    document.getElementById("modalActivities");
+            document.getElementById("modalActivities");
 
-const activities = report.activities || [];
+        const activities = report.activities || [];
 
-if (activities.length === 0) {
-    activityContainer.innerHTML = `
-        <p class="activity-empty">
-            No activity recorded.
-        </p>
-    `;
-} else {
-    activityContainer.innerHTML = activities
-        .map(activity => `
-            <div class="activity-item">
-                <div class="activity-dot"></div>
+        if (activities.length === 0) {
+            activityContainer.innerHTML = `
+                <p class="activity-empty">
+                    No activity recorded.
+                </p>
+            `;
+        } else {
+            activityContainer.innerHTML = activities
+                .map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
 
-                <div class="activity-content">
-                    <strong>
-                        ${escapeHtml(activity.actionDisplay)}
-                    </strong>
+                        <div class="activity-content">
+                            <strong>
+                                ${escapeHtml(
+                                    activity.actionDisplay
+                                )}
+                            </strong>
 
-                    <p>
-                        ${formatStatus(activity.oldStatus)}
-                        →
-                        ${formatStatus(activity.newStatus)}
-                    </p>
+                            <p>
+                                ${formatStatus(
+                                    activity.oldStatus
+                                )}
+                                →
+                                ${formatStatus(
+                                    activity.newStatus
+                                )}
+                            </p>
 
-                    <span>
-                        ${formatActivityTime(activity.createdAt)}
-                    </span>
-                </div>
-            </div>
-        `)
-        .join("");
-}
+                            <span>
+                                ${formatActivityTime(
+                                    activity.createdAt
+                                )}
+                            </span>
+                        </div>
+                    </div>
+                `)
+                .join("");
+        }
+
 
         modal.classList.add("active");
+
         document.body.classList.add("modal-open");
 
     } catch (error) {
-        console.error("Report detail error:", error);
+        console.error(
+            "Report detail error:",
+            error
+        );
+
         alert("Unable to load report details.");
     }
 }
+
 
 function formatActivityTime(dateValue) {
     if (!dateValue) {
@@ -357,24 +391,51 @@ function formatActivityTime(dateValue) {
     return date.toLocaleString();
 }
 
+
 function closeReportModal() {
     const modal = document.getElementById("reportModal");
 
     modal.classList.remove("active");
+
     document.body.classList.remove("modal-open");
 }
 
 
-document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-        closeReportModal();
-    }
+refreshButton.addEventListener(
+    "click",
+    loadDashboard
+);
+
+
+[
+    categoryFilter,
+    urgencyFilter,
+    statusFilter,
+    orderingFilter
+].forEach(filter => {
+    filter.addEventListener(
+        "change",
+        loadReports
+    );
 });
+
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+        if (event.key === "Escape") {
+            closeReportModal();
+        }
+    }
+);
+
 
 const AUTO_REFRESH_INTERVAL = 15000;
 
+
 setInterval(async function () {
-    const modal = document.getElementById("reportModal");
+    const modal =
+        document.getElementById("reportModal");
 
     if (modal.classList.contains("active")) {
         return;
@@ -383,3 +444,6 @@ setInterval(async function () {
     await loadDashboard();
 
 }, AUTO_REFRESH_INTERVAL);
+
+
+loadDashboard();

@@ -70,22 +70,19 @@ class ReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Report
-        fields = [
+        fields = "__all__"
+
+        read_only_fields = [
             "id",
-            "name",
-            "contact",
-            "location",
-            "description",
-            "language",
             "category",
             "urgency",
             "summary",
-            "suggestedAction",
+            "suggested_action",
             "confidence",
-            "possibleDuplicate",
-            "matchedReportId",
+            "possible_duplicate",
+            "duplicate_similarity",
+            "matched_report",
             "status",
-            "createdAt",
-            "updatedAt",
-            "activities",
+            "created_at",
+            "updated_at",
         ]

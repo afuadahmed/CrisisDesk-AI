@@ -85,6 +85,11 @@ class Report(models.Model):
         default=False
     )
 
+    duplicate_similarity = models.FloatField(
+    null=True,
+    blank=True
+)
+
     matched_report = models.ForeignKey(
         'self',
         on_delete=models.SET_NULL,
