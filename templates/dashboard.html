@@ -2,13 +2,18 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>CrisisDesk AI</title>
 
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=3">
 </head>
 
 <body>
@@ -16,195 +21,416 @@
 <div class="app">
 
     <header class="topbar">
+
         <div>
-            <h1>CrisisDesk <span>AI</span></h1>
-            <p>AI-Powered Crisis Command Center</p>
+            <h1>
+                CrisisDesk <span>AI</span>
+            </h1>
+
+            <p>
+                AI-Powered Crisis Command Center
+            </p>
         </div>
 
-<div class="system-status">
-    <span class="status-dot"></span>
+        <div class="system-status">
 
-    <div>
-        <span>System Operational</span>
-        <small class="live-text">
-            LIVE · Auto-refresh every 15s
-        </small>
-    </div>
-</div>
+            <span class="status-dot"></span>
+
+            <div>
+                <span>System Operational</span>
+
+                <small class="live-text">
+                    LIVE · Auto-refresh every 15s
+                </small>
+            </div>
+
+        </div>
+
     </header>
+
 
     <main class="dashboard">
 
         <section class="stats-grid">
 
             <div class="stat-card">
+
                 <p>Total Reports</p>
-                <h2 id="totalReports">0</h2>
+
+                <h2 id="totalReports">
+                    0
+                </h2>
+
             </div>
+
 
             <div class="stat-card critical-card">
+
                 <p>Critical Reports</p>
-                <h2 id="criticalReports">0</h2>
+
+                <h2 id="criticalReports">
+                    0
+                </h2>
+
             </div>
 
+
             <div class="stat-card">
+
                 <p>Possible Duplicates</p>
-                <h2 id="possibleDuplicates">0</h2>
+
+                <h2 id="possibleDuplicates">
+                    0
+                </h2>
+
             </div>
 
         </section>
 
+
         <section class="report-section">
 
             <div class="section-header">
-    <div>
-        <h2>Live Crisis Queue</h2>
-        <p>AI-classified incoming emergency reports</p>
-    </div>
 
-    <button id="refreshButton">
-        Refresh
-    </button>
-</div>
+                <div>
 
-<div class="filter-bar">
+                    <h2>
+                        Live Crisis Queue
+                    </h2>
 
-    <select id="categoryFilter">
-        <option value="">All Categories</option>
-        <option value="fire">Fire</option>
-        <option value="accident">Accident</option>
-        <option value="medical">Medical</option>
-        <option value="crime">Crime</option>
-        <option value="natural_disaster">Natural Disaster</option>
-        <option value="other">Other</option>
-    </select>
+                    <p>
+                        AI-classified incoming emergency reports
+                    </p>
 
-    <select id="urgencyFilter">
-        <option value="">All Urgencies</option>
-        <option value="critical">Critical</option>
-        <option value="high">High</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
-    </select>
+                </div>
 
-    <select id="statusFilter">
-        <option value="">All Statuses</option>
-        <option value="pending">Pending</option>
-        <option value="in_review">In Review</option>
-        <option value="assigned">Assigned</option>
-        <option value="resolved">Resolved</option>
-        <option value="rejected">Rejected</option>
-    </select>
 
-    <select id="orderingFilter">
-        <option value="-created_at">Newest First</option>
-        <option value="created_at">Oldest First</option>
-        <option value="-confidence">Highest Confidence</option>
-        <option value="confidence">Lowest Confidence</option>
-    </select>
+                <button id="refreshButton">
+                    Refresh
+                </button>
 
-</div>
+            </div>
 
-            <div id="reportList" class="report-list">
-                <p class="loading">Loading reports...</p>
+
+            <div class="filter-bar">
+
+                <select id="categoryFilter">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    <option value="fire">
+                        Fire
+                    </option>
+
+                    <option value="accident">
+                        Accident
+                    </option>
+
+                    <option value="medical">
+                        Medical
+                    </option>
+
+                    <option value="crime">
+                        Crime
+                    </option>
+
+                    <option value="natural_disaster">
+                        Natural Disaster
+                    </option>
+
+                    <option value="other">
+                        Other
+                    </option>
+
+                </select>
+
+
+                <select id="urgencyFilter">
+
+                    <option value="">
+                        All Urgencies
+                    </option>
+
+                    <option value="critical">
+                        Critical
+                    </option>
+
+                    <option value="high">
+                        High
+                    </option>
+
+                    <option value="medium">
+                        Medium
+                    </option>
+
+                    <option value="low">
+                        Low
+                    </option>
+
+                </select>
+
+
+                <select id="statusFilter">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option value="pending">
+                        Pending
+                    </option>
+
+                    <option value="in_review">
+                        In Review
+                    </option>
+
+                    <option value="assigned">
+                        Assigned
+                    </option>
+
+                    <option value="resolved">
+                        Resolved
+                    </option>
+
+                    <option value="rejected">
+                        Rejected
+                    </option>
+
+                </select>
+
+
+                <select id="orderingFilter">
+
+                    <option value="-created_at">
+                        Newest First
+                    </option>
+
+                    <option value="created_at">
+                        Oldest First
+                    </option>
+
+                    <option value="-confidence">
+                        Highest Confidence
+                    </option>
+
+                    <option value="confidence">
+                        Lowest Confidence
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="reportList"
+                class="report-list"
+            >
+
+                <p class="loading">
+                    Loading incidents...
+                </p>
+
             </div>
 
         </section>
 
     </main>
 
-    <!-- Report Detail Modal -->
-<div id="reportModal" class="modal">
-    <div class="modal-overlay" onclick="closeReportModal()"></div>
 
-    <div class="modal-content">
-        <div class="modal-header">
-            <div>
-                <p class="modal-label">CRISIS REPORT</p>
-                <h2 id="modalCategory">Report Details</h2>
+    <!-- Incident Detail Modal -->
+
+    <div
+        id="reportModal"
+        class="modal"
+    >
+
+        <div
+            class="modal-overlay"
+            onclick="closeReportModal()"
+        ></div>
+
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <p class="modal-label">
+                        CRISIS INCIDENT
+                    </p>
+
+                    <h2 id="modalCategory">
+                        Incident Details
+                    </h2>
+
+                </div>
+
+
+                <button
+                    class="modal-close"
+                    onclick="closeReportModal()"
+                    type="button"
+                >
+                    &times;
+                </button>
+
             </div>
 
-            <button
-                class="modal-close"
-                onclick="closeReportModal()"
-                type="button"
-            >
-                &times;
-            </button>
+
+            <div class="modal-body">
+
+                <div class="modal-grid">
+
+                    <div class="detail-item">
+
+                        <span>Urgency</span>
+
+                        <strong id="modalUrgency">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>Status</span>
+
+                        <strong id="modalStatus">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>Confidence</span>
+
+                        <strong id="modalConfidence">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>Location</span>
+
+                        <strong id="modalLocation">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-section">
+
+                    <h3>
+                        AI Summary
+                    </h3>
+
+                    <p id="modalSummary">
+                        -
+                    </p>
+
+                </div>
+
+
+                <div class="modal-section action-section">
+
+                    <h3>
+                        AI Suggested Action
+                    </h3>
+
+                    <p id="modalSuggestedAction">
+                        -
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="modalIncident"
+                    class="incident-intelligence"
+                >
+
+                    <span class="incident-intelligence-label">
+                        INCIDENT INTELLIGENCE
+                    </span>
+
+                    <strong id="modalIncidentCount">
+                        -
+                    </strong>
+
+                    <p>
+                        Incident ID:
+                        <span id="modalIncidentId">
+                            -
+                        </span>
+                    </p>
+
+                </div>
+
+
+                <div class="modal-section linked-reports-section">
+
+                    <h3>
+                        Linked Reports
+                    </h3>
+
+                    <p class="linked-reports-description">
+                        Individual reports associated with this incident.
+                    </p>
+
+                    <div id="modalLinkedReports">
+
+                        <p class="activity-empty">
+                            No linked reports found.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-section activity-section">
+
+                    <h3>
+                        Activity Timeline
+                    </h3>
+
+                    <div
+                        id="modalActivities"
+                        class="activity-timeline"
+                    >
+
+                        <p class="activity-empty">
+                            No activity recorded.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="modal-body">
-            <div class="modal-grid">
-                <div class="detail-item">
-                    <span>Urgency</span>
-                    <strong id="modalUrgency">-</strong>
-                </div>
-
-                <div class="detail-item">
-                    <span>Status</span>
-                    <strong id="modalStatus">-</strong>
-                </div>
-
-                <div class="detail-item">
-                    <span>Confidence</span>
-                    <strong id="modalConfidence">-</strong>
-                </div>
-
-                <div class="detail-item">
-                    <span>Location</span>
-                    <strong id="modalLocation">-</strong>
-                </div>
-            </div>
-
-            <div class="modal-section">
-                <h3>AI Summary</h3>
-                <p id="modalSummary">-</p>
-            </div>
-
-            <div class="modal-section action-section">
-                <h3>AI Suggested Action</h3>
-                <p id="modalSuggestedAction">-</p>
-            </div>
-
-            <div class="modal-section">
-                <h3>Original Description</h3>
-                <p id="modalDescription">-</p>
-            </div>
-
-            <div class="modal-grid">
-                <div class="detail-item">
-                    <span>Reporter</span>
-                    <strong id="modalReporter">-</strong>
-                </div>
-
-                <div class="detail-item">
-                    <span>Contact</span>
-                    <strong id="modalContact">-</strong>
-                </div>
-            </div>
-
-            <div
-    id="modalDuplicate"
-    class="duplicate-warning"
->
-    <strong>Possible duplicate report detected.</strong>
-    <span id="modalDuplicateSimilarity"></span>
-</div>
-            <div class="modal-section activity-section">
-    <h3>Activity Timeline</h3>
-
-    <div id="modalActivities" class="activity-timeline">
-        <p class="activity-empty">No activity recorded.</p>
-    </div>
-</div>
-        </div>
     </div>
 
 </div>
 
-</div>
 
 <script src="{% static 'js/dashboard.js' %}"></script>
 
 </body>
+
 </html>
