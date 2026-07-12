@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
 
 from .models import Report
@@ -233,3 +233,5 @@ class AnalyticsSummaryView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+def dashboard_view(request):
+    return render(request, "dashboard.html")

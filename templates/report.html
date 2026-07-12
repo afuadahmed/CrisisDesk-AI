@@ -1,0 +1,111 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Report Crisis | CrisisDesk AI</title>
+
+    <link rel="stylesheet" href="{% static 'css/report.css' %}">
+</head>
+
+<body>
+
+    <main class="report-page">
+
+        <section class="report-container">
+
+            <div class="report-header">
+                <h1>CrisisDesk <span>AI</span></h1>
+
+                <p>
+                    Report an emergency or crisis situation.
+                    AI will analyze and prioritize your report.
+                </p>
+            </div>
+
+            <form id="reportForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            placeholder="Enter your name"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact">Contact Number</label>
+
+                        <input
+                            type="text"
+                            id="contact"
+                            placeholder="01XXXXXXXXX"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Crisis Location</label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        placeholder="Example: Savar Bus Stand, Dhaka"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="language">Language</label>
+
+                    <select id="language">
+                        <option value="en">English</option>
+                        <option value="bn">বাংলা</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">
+                        Describe the Crisis
+                    </label>
+
+                    <textarea
+                        id="description"
+                        rows="7"
+                        placeholder="Describe what is happening..."
+                        required
+                    ></textarea>
+                </div>
+
+                <button
+                    type="submit"
+                    id="submitButton"
+                >
+                    Submit Emergency Report
+                </button>
+
+            </form>
+
+            <div
+                id="resultMessage"
+                class="result-message"
+            ></div>
+
+        </section>
+
+    </main>
+
+    <script src="{% static 'js/report.js' %}"></script>
+
+</body>
+
+</html>
