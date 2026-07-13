@@ -144,7 +144,7 @@ class ReportListCreateView(APIView):
             )
 
         duplicate_result = detect_duplicate(
-            description=validated_data["description"],
+            description=ai_result["summary"],
             location=validated_data["location"],
             category=ai_result["category"],
         )
@@ -281,7 +281,6 @@ class ReportStatusUpdateView(APIView):
             )
 
         old_status = report.status
-
         report.status = new_status
 
         report.save(

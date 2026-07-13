@@ -25,6 +25,7 @@ def normalize_location(location):
         "-": " ",
         "dhaka": "",
         "ঢাকা": "",
+        "১০": "10",
     }
 
     for old, new in replacements.items():
@@ -36,6 +37,9 @@ def normalize_location(location):
 def calculate_location_similarity(location1, location2):
     location1 = normalize_location(location1)
     location2 = normalize_location(location2)
+
+    if not location1 or not location2:
+        return 0.0
 
     if location1 == location2:
         return 1.0
@@ -56,9 +60,13 @@ def detect_duplicate(description, location, category):
     highest_score = 0.0
 
     for report in existing_reports:
+        existing_description = (
+            report.summary or report.description
+        )
+
         description_score = calculate_text_similarity(
             description,
-            report.description,
+            existing_description,
         )
 
         location_score = calculate_location_similarity(
