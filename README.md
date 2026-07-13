@@ -4,13 +4,16 @@ CrisisDesk AI is an AI-powered crisis report classification and incident intelli
 
 The system transforms unstructured emergency reports into structured operational intelligence by classifying emergencies, determining urgency, generating summaries, recommending response actions, detecting similar reports, and clustering reports describing the same real-world incident.
 
-## Live Deployment
+## Live Demo
 
 CrisisDesk AI is publicly deployed as a live web application.
 
-Live Application:
+### Application Links
 
-https://crisisdesk-ai-24hg.onrender.com
+- Live Crisis Command Dashboard: https://crisisdesk-ai-24hg.onrender.com/
+- Submit Crisis Report: https://crisisdesk-ai-24hg.onrender.com/report/
+- Interactive Swagger API Documentation: https://crisisdesk-ai-24hg.onrender.com/api/docs/
+- OpenAPI Schema: https://crisisdesk-ai-24hg.onrender.com/api/schema/
 
 > Note: The application is hosted on a free cloud instance. The first request may take additional time if the service is waking from inactivity.
 
@@ -50,6 +53,7 @@ The platform provides:
 - Real-time operational analytics
 - Advanced search and filtering
 - Automatic dashboard refresh
+- Interactive Swagger/OpenAPI documentation
 
 ## Core Features
 
@@ -192,6 +196,20 @@ Reports can be searched and filtered using:
 
 These tools allow emergency operators to quickly identify relevant reports during high-volume crisis situations.
 
+### Swagger and OpenAPI Documentation
+
+CrisisDesk AI provides interactive REST API documentation using Swagger UI and an automatically generated OpenAPI schema.
+
+Swagger UI allows developers and evaluators to inspect the available API endpoints, request formats, parameters, and response schemas.
+
+Interactive API documentation:
+
+`/api/docs/`
+
+OpenAPI schema:
+
+`/api/schema/`
+
 ## System Architecture
 
 CrisisDesk AI follows a modular service-oriented Django backend architecture.
@@ -235,3 +253,253 @@ Citizen / Crisis Reporter
                           |
                           v
               Crisis Command Dashboard
+```
+
+## Technology Stack
+
+### Backend
+
+- Python
+- Django
+- Django REST Framework
+
+### AI Processing
+
+- External AI-powered crisis classification service
+- Natural-language crisis analysis
+- Multilingual report processing
+
+### Duplicate Detection
+
+- Weighted text similarity analysis
+- Description similarity
+- Location similarity
+- Category matching
+- Incident clustering
+
+### API Documentation
+
+- drf-spectacular
+- OpenAPI
+- Swagger UI
+
+### Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+
+### Database
+
+- SQLite
+
+### Deployment
+
+- Render
+- Gunicorn
+- WhiteNoise
+
+## System Workflow
+
+1. A citizen submits a crisis report.
+2. The backend validates the request.
+3. The AI processing service analyzes the crisis description.
+4. The report is classified by category and urgency.
+5. AI generates a concise incident summary.
+6. AI recommends an emergency response action.
+7. Duplicate detection compares the report with existing reports.
+8. Similar reports are linked to the same incident.
+9. The incident appears in the live crisis queue.
+10. Emergency operators inspect incident intelligence.
+11. Operators update the response status.
+12. Status changes are recorded in the activity timeline.
+13. Real-time analytics update automatically.
+
+## API Endpoints
+
+### Reports
+
+`GET /api/reports`
+
+Retrieve crisis reports with pagination, search, filtering, and ordering.
+
+`POST /api/reports`
+
+Submit a new crisis report for AI processing.
+
+`GET /api/reports/<report_id>`
+
+Retrieve a specific report.
+
+`DELETE /api/reports/<report_id>`
+
+Delete a report.
+
+### Report Status
+
+`PATCH /api/reports/<report_id>/status`
+
+Update the status of an individual report.
+
+### Incident Status
+
+`PATCH /api/incidents/<incident_id>/status`
+
+Update the status of every report linked to an incident.
+
+### Analytics
+
+`GET /api/reports/stats/summary`
+
+Retrieve real-time crisis analytics.
+
+`GET /api/analytics/summary`
+
+Retrieve crisis analytics summary data.
+
+### API Documentation
+
+`GET /api/docs/`
+
+Open the interactive Swagger API documentation.
+
+`GET /api/schema/`
+
+Retrieve the generated OpenAPI schema.
+
+## Example Report Submission
+
+```json
+{
+    "name": "Karim",
+    "contact": "01800000000",
+    "location": "Dhaka Mirpur 10",
+    "description": "A bus has overturned near Mirpur 10. Several passengers are injured and emergency medical assistance is urgently needed.",
+    "language": "en"
+}
+```
+
+The AI processing layer automatically generates the category, urgency, summary, suggested action, and confidence score.
+
+## Bangla Report Example
+
+```json
+{
+    "name": "Rahim",
+    "contact": "01800000000",
+    "location": "মিরপুর ১০, ঢাকা",
+    "description": "মিরপুর ১০ এর একটি আবাসিক ভবনে ভয়াবহ আগুন লেগেছে। প্রচুর ধোঁয়া হচ্ছে এবং কয়েকজন মানুষ ভবনের ভিতরে আটকা পড়েছে।",
+    "language": "bn"
+}
+```
+
+The report is processed into structured crisis intelligence and can be compared with English reports describing the same incident.
+
+## Search Example
+
+```text
+GET /api/reports?search=mirpur
+```
+
+## Combined Filtering Example
+
+```text
+GET /api/reports?category=accident&search=mirpur&start_date=2026-07-12
+```
+
+## Running the Project
+
+Clone the repository:
+
+```bash
+git clone https://github.com/afuadahmed/CrisisDesk-AI.git
+cd CrisisDesk-AI
+```
+
+Create a virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate the virtual environment.
+
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Configure the required environment variables in a `.env` file.
+
+Run database migrations:
+
+```bash
+python manage.py migrate
+```
+
+Start the development server:
+
+```bash
+python manage.py runserver
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000/
+```
+
+## Testing
+
+Run the automated test suite:
+
+```bash
+python manage.py test
+```
+
+Run Django system checks:
+
+```bash
+python manage.py check
+```
+
+## Security
+
+Sensitive configuration and API credentials are stored using environment variables.
+
+The `.env` file is excluded from Git version control.
+
+Production secrets are configured through deployment environment variables.
+
+## Deployment
+
+The application is deployed on Render using Gunicorn as the production WSGI server.
+
+Static assets are served using WhiteNoise.
+
+The deployed service automatically builds from the main GitHub branch.
+
+## Future Scope
+
+Future versions of CrisisDesk AI could integrate:
+
+- Emergency service dispatch systems
+- Geographic incident visualization
+- SMS and mobile emergency reporting
+- Additional multilingual crisis processing
+- Real-time government emergency feeds
+- Predictive crisis intelligence
+- Role-based emergency operator authentication
+
+## Project Vision
+
+CrisisDesk AI demonstrates how artificial intelligence can convert fragmented emergency reports into structured, actionable crisis intelligence.
+
+The goal is to help response teams identify critical incidents faster, reduce duplicate operational effort, and make better emergency response decisions.

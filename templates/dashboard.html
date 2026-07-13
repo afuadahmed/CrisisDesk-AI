@@ -20,215 +20,234 @@
 
 <div class="app">
 
-   <header class="topbar">
+    <header class="topbar">
 
-    <div>
-        <h1>
-            CrisisDesk <span>AI</span>
-        </h1>
+        <div>
+            <h1>
+                CrisisDesk <span>AI</span>
+            </h1>
 
-        <p>
-            AI-Powered Crisis Command Center
-        </p>
-    </div>
-
-
-    <div style="
-        display: flex;
-        align-items: center;
-        gap: 28px;
-    ">
-
-        <a
-            href="/report/"
-            style="
-                display: inline-block;
-                padding: 14px 24px;
-                background: #0ea5e9;
-                color: #ffffff;
-                text-decoration: none;
-                border-radius: 8px;
-                font-weight: 700;
-                font-size: 16px;
-                transition: 0.2s;
-            "
-        >
-            + Report Crisis
-        </a>
+            <p>
+                AI-Powered Crisis Command Center
+            </p>
+        </div>
 
 
-        <div class="system-status">
+        <div style="
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        ">
 
-            <span class="status-dot"></span>
+            <a
+                href="/report/"
+                style="
+                    display: inline-block;
+                    padding: 14px 24px;
+                    background: #0ea5e9;
+                    color: #ffffff;
+                    text-decoration: none;
+                    border-radius: 8px;
+                    font-weight: 700;
+                    font-size: 16px;
+                "
+            >
+                + Report Crisis
+            </a>
 
-            <div>
-                <span>System Operational</span>
 
-                <small class="live-text">
-                    LIVE · Auto-refresh every 15s
-                </small>
+            <a
+                href="/api/docs/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="
+                    display: inline-block;
+                    padding: 14px 24px;
+                    background: transparent;
+                    color: #38bdf8;
+                    text-decoration: none;
+                    border: 1px solid #38bdf8;
+                    border-radius: 8px;
+                    font-weight: 700;
+                    font-size: 16px;
+                "
+            >
+                API Docs
+            </a>
+
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div>
+                    <span>System Operational</span>
+
+                    <small class="live-text">
+                        LIVE · Auto-refresh every 15s
+                    </small>
+                </div>
+
             </div>
 
         </div>
 
-    </div>
-
-</header>
+    </header>
 
 
     <main class="dashboard">
 
         <section class="stats-grid">
 
-    <div class="stat-card">
+            <div class="stat-card">
 
-        <p>Total Reports</p>
+                <p>Total Reports</p>
 
-        <h2 id="totalReports">
-            0
-        </h2>
+                <h2 id="totalReports">
+                    0
+                </h2>
 
-        <span class="stat-description">
-            Incoming crisis reports
-        </span>
+                <span class="stat-description">
+                    Incoming crisis reports
+                </span>
 
-    </div>
-
-
-    <div class="stat-card critical-card">
-
-        <p>Critical Reports</p>
-
-        <h2 id="criticalReports">
-            0
-        </h2>
-
-        <span class="stat-description">
-            Immediate response required
-        </span>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <p>Possible Duplicates</p>
-
-        <h2 id="possibleDuplicates">
-            0
-        </h2>
-
-        <span class="stat-description">
-            AI-detected similar reports
-        </span>
-
-    </div>
-
-
-    <div class="stat-card pending-card">
-
-        <p>Pending Reports</p>
-
-        <h2 id="pendingReports">
-            0
-        </h2>
-
-        <span class="stat-description">
-            Awaiting crisis response
-        </span>
-
-    </div>
-
-
-    <div class="stat-card resolved-card">
-
-        <p>Resolved Reports</p>
-
-        <h2 id="resolvedReports">
-            0
-        </h2>
-
-        <span class="stat-description">
-            Successfully handled reports
-        </span>
-
-    </div>
-
-</section>
-
-
-<section class="analytics-section">
-
-    <div class="analytics-header">
-
-        <div>
-
-            <p class="analytics-label">
-                CRISIS INTELLIGENCE
-            </p>
-
-            <h2>
-                Real-Time Analytics
-            </h2>
-
-            <p>
-                Live operational intelligence generated from crisis reports.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="analytics-grid">
-
-        <div class="analytics-card">
-
-            <h3>
-                Category Breakdown
-            </h3>
-
-            <div id="categoryAnalytics">
-                <p class="analytics-empty">
-                    Loading analytics...
-                </p>
             </div>
 
-        </div>
 
+            <div class="stat-card critical-card">
 
-        <div class="analytics-card">
+                <p>Critical Reports</p>
 
-            <h3>
-                Response Status
-            </h3>
+                <h2 id="criticalReports">
+                    0
+                </h2>
 
-            <div id="statusAnalytics">
-                <p class="analytics-empty">
-                    Loading analytics...
-                </p>
+                <span class="stat-description">
+                    Immediate response required
+                </span>
+
             </div>
 
-        </div>
 
+            <div class="stat-card">
 
-        <div class="analytics-card">
+                <p>Possible Duplicates</p>
 
-            <h3>
-                Urgency Distribution
-            </h3>
+                <h2 id="possibleDuplicates">
+                    0
+                </h2>
 
-            <div id="urgencyAnalytics">
-                <p class="analytics-empty">
-                    Loading analytics...
-                </p>
+                <span class="stat-description">
+                    AI-detected similar reports
+                </span>
+
             </div>
 
-        </div>
 
-    </div>
+            <div class="stat-card pending-card">
 
-</section>
+                <p>Pending Reports</p>
+
+                <h2 id="pendingReports">
+                    0
+                </h2>
+
+                <span class="stat-description">
+                    Awaiting crisis response
+                </span>
+
+            </div>
+
+
+            <div class="stat-card resolved-card">
+
+                <p>Resolved Reports</p>
+
+                <h2 id="resolvedReports">
+                    0
+                </h2>
+
+                <span class="stat-description">
+                    Successfully handled reports
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <section class="analytics-section">
+
+            <div class="analytics-header">
+
+                <div>
+
+                    <p class="analytics-label">
+                        CRISIS INTELLIGENCE
+                    </p>
+
+                    <h2>
+                        Real-Time Analytics
+                    </h2>
+
+                    <p>
+                        Live operational intelligence generated from crisis reports.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="analytics-grid">
+
+                <div class="analytics-card">
+
+                    <h3>
+                        Category Breakdown
+                    </h3>
+
+                    <div id="categoryAnalytics">
+                        <p class="analytics-empty">
+                            Loading analytics...
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="analytics-card">
+
+                    <h3>
+                        Response Status
+                    </h3>
+
+                    <div id="statusAnalytics">
+                        <p class="analytics-empty">
+                            Loading analytics...
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="analytics-card">
+
+                    <h3>
+                        Urgency Distribution
+                    </h3>
+
+                    <div id="urgencyAnalytics">
+                        <p class="analytics-empty">
+                            Loading analytics...
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
 
 
         <section class="report-section">
@@ -257,81 +276,86 @@
 
             <div class="filter-bar">
 
-    <input
-        type="text"
-        id="searchFilter"
-        placeholder="Search location, reporter, description..."
-        class="search-input"
-    >
+                <input
+                    type="text"
+                    id="searchFilter"
+                    placeholder="Search location, reporter, description..."
+                    class="search-input"
+                >
 
-    <input
-        type="date"
-        id="startDateFilter"
-        class="date-input"
-        title="Start Date"
-    >
+                <input
+                    type="date"
+                    id="startDateFilter"
+                    class="date-input"
+                    title="Start Date"
+                >
 
-    <input
-        type="date"
-        id="endDateFilter"
-        class="date-input"
-        title="End Date"
-    >
+                <input
+                    type="date"
+                    id="endDateFilter"
+                    class="date-input"
+                    title="End Date"
+                >
 
-<select id="categoryFilter">
-    <option value="">All Categories</option>
-    <option value="medical">Medical</option>
-    <option value="fire">Fire</option>
-    <option value="accident">Accident</option>
-    <option value="crime">Crime</option>
-    <option value="flood">Flood</option>
-    <option value="utility">Utility</option>
-    <option value="public_service">Public Service</option>
-    <option value="infrastructure">Infrastructure</option>
-    <option value="other">Other</option>
-</select>
 
-    <select id="urgencyFilter">
-        <option value="">All Urgencies</option>
-        <option value="critical">Critical</option>
-        <option value="high">High</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
-    </select>
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="medical">Medical</option>
+                    <option value="fire">Fire</option>
+                    <option value="accident">Accident</option>
+                    <option value="crime">Crime</option>
+                    <option value="flood">Flood</option>
+                    <option value="utility">Utility</option>
+                    <option value="public_service">Public Service</option>
+                    <option value="infrastructure">Infrastructure</option>
+                    <option value="other">Other</option>
+                </select>
 
-    <select id="statusFilter">
-        <option value="">All Statuses</option>
-        <option value="pending">Pending</option>
-        <option value="in_review">In Review</option>
-        <option value="assigned">Assigned</option>
-        <option value="resolved">Resolved</option>
-        <option value="rejected">Rejected</option>
-    </select>
 
-    <select id="orderingFilter">
-        <option value="-created_at">
-            Newest First
-        </option>
-        <option value="created_at">
-            Oldest First
-        </option>
-        <option value="-confidence">
-            Highest Confidence
-        </option>
-        <option value="confidence">
-            Lowest Confidence
-        </option>
-    </select>
+                <select id="urgencyFilter">
+                    <option value="">All Urgencies</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
 
-    <button
-        id="clearFiltersButton"
-        type="button"
-        class="clear-filters-button"
-    >
-        Clear Filters
-    </button>
 
-</div>
+                <select id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="in_review">In Review</option>
+                    <option value="assigned">Assigned</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+
+
+                <select id="orderingFilter">
+                    <option value="-created_at">
+                        Newest First
+                    </option>
+                    <option value="created_at">
+                        Oldest First
+                    </option>
+                    <option value="-confidence">
+                        Highest Confidence
+                    </option>
+                    <option value="confidence">
+                        Lowest Confidence
+                    </option>
+                </select>
+
+
+                <button
+                    id="clearFiltersButton"
+                    type="button"
+                    class="clear-filters-button"
+                >
+                    Clear Filters
+                </button>
+
+            </div>
 
 
             <div
