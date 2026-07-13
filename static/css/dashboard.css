@@ -989,3 +989,69 @@ body.modal-open {
         padding: 20px;
     }
 }
+
+.search-input,
+.date-input {
+    min-height: 46px;
+    padding: 0 16px;
+
+    border: 1px solid #24354d;
+    border-radius: 8px;
+
+    background: #101b2d;
+    color: #ffffff;
+
+    font-size: 14px;
+    outline: none;
+}
+
+.search-input {
+    min-width: 280px;
+    flex: 1;
+}
+
+.search-input::placeholder {
+    color: #7185a5;
+}
+
+.search-input:focus,
+.date-input:focus {
+    border-color: #38bdf8;
+}
+
+.date-input {
+    color-scheme: dark;
+}
+
+.clear-filters-button {
+    min-height: 46px;
+    padding: 0 18px;
+
+    border: 1px solid #334765;
+    border-radius: 8px;
+
+    background: #17243a;
+    color: #d9e7ff;
+
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.clear-filters-button:hover {
+    border-color: #38bdf8;
+    color: #38bdf8;
+}
+
+@media (max-width: 900px) {
+
+    .search-input {
+        min-width: 100%;
+    }
+
+    .date-input,
+    .clear-filters-button {
+        width: 100%;
+    }
+}

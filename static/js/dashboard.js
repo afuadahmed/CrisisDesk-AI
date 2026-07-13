@@ -15,6 +15,18 @@ const statusFilter =
 const orderingFilter =
     document.getElementById("orderingFilter");
 
+const searchFilter =
+    document.getElementById("searchFilter");
+
+const startDateFilter =
+    document.getElementById("startDateFilter");
+
+const endDateFilter =
+    document.getElementById("endDateFilter");
+
+const clearFiltersButton =
+    document.getElementById("clearFiltersButton");
+
 
 const totalReports =
     document.getElementById("totalReports");
@@ -223,6 +235,27 @@ async function loadReports() {
                 statusFilter.value
             );
         }
+
+        if (searchFilter.value.trim()) {
+    params.set(
+        "search",
+        searchFilter.value.trim()
+    );
+}
+
+if (startDateFilter.value) {
+    params.set(
+        "start_date",
+        startDateFilter.value
+    );
+}
+
+if (endDateFilter.value) {
+    params.set(
+        "end_date",
+        endDateFilter.value
+    );
+}
 
 
         const response = await fetch(
@@ -1180,5 +1213,49 @@ setInterval(
     AUTO_REFRESH_INTERVAL
 );
 
+let searchTimeout;
+
+
+searchFilter.addEventListener(
+    "input",
+    function () {
+
+        clearTimeout(searchTimeout);
+
+        searchTimeout = setTimeout(
+            loadReports,
+            400
+        );
+    }
+);
+
+
+startDateFilter.addEventListener(
+    "change",
+    loadReports
+);
+
+
+endDateFilter.addEventListener(
+    "change",
+    loadReports
+);
+
+
+clearFiltersButton.addEventListener(
+    "click",
+    function () {
+
+        searchFilter.value = "";
+        startDateFilter.value = "";
+        endDateFilter.value = "";
+        categoryFilter.value = "";
+        urgencyFilter.value = "";
+        statusFilter.value = "";
+        orderingFilter.value = "-created_at";
+
+        loadReports();
+    }
+);
 
 loadDashboard();

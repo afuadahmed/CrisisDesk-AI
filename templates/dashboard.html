@@ -230,114 +230,80 @@
 
             <div class="filter-bar">
 
-                <select id="categoryFilter">
+    <input
+        type="text"
+        id="searchFilter"
+        placeholder="Search location, reporter, description..."
+        class="search-input"
+    >
 
-                    <option value="">
-                        All Categories
-                    </option>
+    <input
+        type="date"
+        id="startDateFilter"
+        class="date-input"
+        title="Start Date"
+    >
 
-                    <option value="fire">
-                        Fire
-                    </option>
+    <input
+        type="date"
+        id="endDateFilter"
+        class="date-input"
+        title="End Date"
+    >
 
-                    <option value="accident">
-                        Accident
-                    </option>
+    <select id="categoryFilter">
+        <option value="">All Categories</option>
+        <option value="fire">Fire</option>
+        <option value="accident">Accident</option>
+        <option value="medical">Medical</option>
+        <option value="crime">Crime</option>
+        <option value="natural_disaster">
+            Natural Disaster
+        </option>
+        <option value="other">Other</option>
+    </select>
 
-                    <option value="medical">
-                        Medical
-                    </option>
+    <select id="urgencyFilter">
+        <option value="">All Urgencies</option>
+        <option value="critical">Critical</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+    </select>
 
-                    <option value="crime">
-                        Crime
-                    </option>
+    <select id="statusFilter">
+        <option value="">All Statuses</option>
+        <option value="pending">Pending</option>
+        <option value="in_review">In Review</option>
+        <option value="assigned">Assigned</option>
+        <option value="resolved">Resolved</option>
+        <option value="rejected">Rejected</option>
+    </select>
 
-                    <option value="natural_disaster">
-                        Natural Disaster
-                    </option>
+    <select id="orderingFilter">
+        <option value="-created_at">
+            Newest First
+        </option>
+        <option value="created_at">
+            Oldest First
+        </option>
+        <option value="-confidence">
+            Highest Confidence
+        </option>
+        <option value="confidence">
+            Lowest Confidence
+        </option>
+    </select>
 
-                    <option value="other">
-                        Other
-                    </option>
+    <button
+        id="clearFiltersButton"
+        type="button"
+        class="clear-filters-button"
+    >
+        Clear Filters
+    </button>
 
-                </select>
-
-
-                <select id="urgencyFilter">
-
-                    <option value="">
-                        All Urgencies
-                    </option>
-
-                    <option value="critical">
-                        Critical
-                    </option>
-
-                    <option value="high">
-                        High
-                    </option>
-
-                    <option value="medium">
-                        Medium
-                    </option>
-
-                    <option value="low">
-                        Low
-                    </option>
-
-                </select>
-
-
-                <select id="statusFilter">
-
-                    <option value="">
-                        All Statuses
-                    </option>
-
-                    <option value="pending">
-                        Pending
-                    </option>
-
-                    <option value="in_review">
-                        In Review
-                    </option>
-
-                    <option value="assigned">
-                        Assigned
-                    </option>
-
-                    <option value="resolved">
-                        Resolved
-                    </option>
-
-                    <option value="rejected">
-                        Rejected
-                    </option>
-
-                </select>
-
-
-                <select id="orderingFilter">
-
-                    <option value="-created_at">
-                        Newest First
-                    </option>
-
-                    <option value="created_at">
-                        Oldest First
-                    </option>
-
-                    <option value="-confidence">
-                        Highest Confidence
-                    </option>
-
-                    <option value="confidence">
-                        Lowest Confidence
-                    </option>
-
-                </select>
-
-            </div>
+</div>
 
 
             <div

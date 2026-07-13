@@ -1,4 +1,5 @@
-from django.db.models import Count
+from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
@@ -25,6 +26,10 @@ class ReportListCreateView(APIView):
         category = request.query_params.get("category")
         urgency = request.query_params.get("urgency")
         report_status = request.query_params.get("status")
+        search = request.query_params.get("search")
+        start_date = request.query_params.get("start_date")
+        end_date = request.query_params.get("end_date")
+
         ordering = request.query_params.get(
             "ordering",
             "-created_at",
@@ -38,6 +43,24 @@ class ReportListCreateView(APIView):
 
         if report_status:
             reports = reports.filter(status=report_status)
+
+        if search:
+            reports = reports.filter(
+                Q(description__icontains=search)
+                | Q(summary__icontains=search)
+                | Q(location__icontains=search)
+                | Q(name__icontains=search)
+            )
+
+        if start_date:
+            reports = reports.filter(
+                created_at__date__gte=start_date
+            )
+
+        if end_date:
+            reports = reports.filter(
+                created_at__date__lte=end_date
+            )
 
         allowed_ordering = [
             "created_at",
@@ -77,6 +100,11 @@ class ReportListCreateView(APIView):
         )
 
         if not serializer.is_valid():
+            print(
+                "SERIALIZER ERRORS:",
+                serializer.errors,
+            )
+
             return Response(
                 {
                     "success": False,
@@ -99,7 +127,10 @@ class ReportListCreateView(APIView):
             )
 
         except Exception as error:
-            print("AI CLASSIFICATION ERROR:", error)
+            print(
+                "AI CLASSIFICATION ERROR:",
+                error,
+            )
 
             return Response(
                 {
@@ -130,7 +161,9 @@ class ReportListCreateView(APIView):
             category=ai_result["category"],
             urgency=ai_result["urgency"],
             summary=ai_result["summary"],
-            suggested_action=ai_result["suggestedAction"],
+            suggested_action=ai_result[
+                "suggestedAction"
+            ],
             confidence=ai_result["confidence"],
             possible_duplicate=duplicate_result[
                 "possible_duplicate"
@@ -182,26 +215,11 @@ class ReportListCreateView(APIView):
 
 class ReportDetailView(APIView):
 
-    def get_report(self, report_id):
-        try:
-            return Report.objects.get(
-                id=report_id
-            )
-
-        except Report.DoesNotExist:
-            return None
-
     def get(self, request, report_id):
-        report = self.get_report(report_id)
-
-        if report is None:
-            return Response(
-                {
-                    "success": False,
-                    "message": "Report not found.",
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        report = get_object_or_404(
+            Report,
+            id=report_id,
+        )
 
         serializer = ReportSerializer(report)
 
@@ -214,16 +232,12 @@ class ReportDetailView(APIView):
         )
 
     def delete(self, request, report_id):
-        report = self.get_report(report_id)
+        report = get_object_or_404(
+            Report,
+            id=report_id,
+        )
 
-        if report is None:
-            return Response(
-                {
-                    "success": False,
-                    "message": "Report not found.",
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        report_id_value = str(report.id)
 
         report.delete()
 
@@ -233,6 +247,9 @@ class ReportDetailView(APIView):
                 "message": (
                     "Report deleted successfully."
                 ),
+                "data": {
+                    "reportId": report_id_value,
+                },
             },
             status=status.HTTP_200_OK,
         )
@@ -241,19 +258,10 @@ class ReportDetailView(APIView):
 class ReportStatusUpdateView(APIView):
 
     def patch(self, request, report_id):
-        try:
-            report = Report.objects.get(
-                id=report_id
-            )
-
-        except Report.DoesNotExist:
-            return Response(
-                {
-                    "success": False,
-                    "message": "Report not found.",
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        report = get_object_or_404(
+            Report,
+            id=report_id,
+        )
 
         new_status = request.data.get("status")
 
@@ -362,7 +370,9 @@ class AnalyticsSummaryView(APIView):
                     "resolvedReports": resolved_reports,
                     "categoryBreakdown": category_counts,
                     "urgencyBreakdown": urgency_counts,
-                    "possibleDuplicates": possible_duplicates,
+                    "possibleDuplicates": (
+                        possible_duplicates
+                    ),
                     "categories": category_counts,
                     "statuses": status_counts,
                     "urgencies": urgency_counts,
@@ -390,7 +400,6 @@ class IncidentStatusUpdateView(APIView):
                 {
                     "success": False,
                     "message": "Invalid status.",
-                    "validStatuses": valid_statuses,
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
