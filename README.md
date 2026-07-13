@@ -2,26 +2,37 @@
 
 CrisisDesk AI is an AI-powered crisis report classification and incident intelligence platform designed to help emergency response teams process incoming crisis reports efficiently.
 
-The system uses AI to classify emergency reports, determine urgency, generate concise summaries, recommend response actions, and detect potentially duplicate reports describing the same real-world incident.
+The system transforms unstructured emergency reports into structured operational intelligence by classifying emergencies, determining urgency, generating summaries, recommending response actions, detecting similar reports, and clustering reports describing the same real-world incident.
+
+## Live Deployment
+
+CrisisDesk AI is publicly deployed as a live web application.
+
+Live Application:
+
+https://crisisdesk-ai-24hg.onrender.com
+
+> Note: The application is hosted on a free cloud instance. The first request may take additional time if the service is waking from inactivity.
 
 ## Problem
 
-During emergencies, multiple people may report the same crisis using different descriptions.
+During emergencies, multiple people may report the same crisis using different descriptions, languages, or location formats.
 
-Emergency response teams must manually:
+Emergency response teams may need to manually:
 
 - Review incoming reports
-- Identify the type of emergency
+- Identify the emergency category
 - Determine urgency
-- Detect duplicate reports
-- Prioritize incidents
+- Detect similar or duplicate reports
+- Prioritize critical incidents
 - Track response status
+- Analyze incoming crisis trends
 
-This can delay critical response operations.
+This manual process can delay critical response operations.
 
 ## Solution
 
-CrisisDesk AI automatically transforms unstructured emergency reports into structured operational intelligence.
+CrisisDesk AI automatically converts unstructured emergency reports into structured crisis intelligence.
 
 The platform provides:
 
@@ -29,12 +40,14 @@ The platform provides:
 - Automatic urgency detection
 - AI-generated incident summaries
 - AI-suggested response actions
-- Semantic duplicate report detection
+- Classification confidence scoring
+- Bangla and English crisis report processing
+- Duplicate and similar report detection
 - Incident clustering
 - Linked report intelligence
 - Crisis response status tracking
 - Activity timeline and audit history
-- Real-time analytics
+- Real-time operational analytics
 - Advanced search and filtering
 - Automatic dashboard refresh
 
@@ -42,86 +55,127 @@ The platform provides:
 
 ### AI Crisis Classification
 
-Incoming crisis descriptions are analyzed by AI.
+Incoming crisis descriptions are analyzed by an AI processing service.
 
 The system determines:
 
-- Category
-- Urgency
-- Summary
-- Suggested response action
+- Crisis category
+- Urgency level
+- Concise incident summary
+- Suggested emergency response action
 - Classification confidence
 
-Supported categories include:
+Supported categories are:
 
-- Fire
-- Accident
-- Medical
-- Crime
-- Natural Disaster
-- Other
+- `medical`
+- `fire`
+- `accident`
+- `crime`
+- `flood`
+- `utility`
+- `public_service`
+- `infrastructure`
+- `other`
 
-### Semantic Duplicate Detection
+Supported urgency levels are:
 
-CrisisDesk AI detects reports that may describe the same real-world incident.
+- `low`
+- `medium`
+- `high`
+- `critical`
 
-Duplicate detection considers:
+### Multilingual Crisis Processing
+
+CrisisDesk AI supports crisis reports written in both Bangla and English.
+
+Users can submit emergency descriptions using natural language.
+
+The AI processing layer converts the submitted description into structured crisis information regardless of whether the original report is written in Bangla or English.
+
+### Duplicate and Similar Report Detection
+
+During a major emergency, multiple citizens may report the same real-world incident using different descriptions.
+
+CrisisDesk AI compares incoming reports with existing reports using:
 
 - Report description similarity
-- Location
+- Location similarity
 - Crisis category
 
-Potential duplicate reports are linked to a shared incident cluster.
+A weighted similarity score is calculated.
 
-This prevents emergency teams from treating multiple reports of the same crisis as unrelated incidents.
+Reports exceeding the configured similarity threshold are marked as possible duplicates and linked to the same incident cluster.
+
+This reduces duplicate operational effort and allows emergency teams to understand how many independent reports are associated with a crisis.
 
 ### Incident Intelligence
 
 Reports describing the same crisis are grouped using a shared Incident ID.
 
-The dashboard displays:
+The incident intelligence interface displays:
 
 - Number of linked reports
+- Incident ID
 - Individual reporter information
-- Original descriptions
+- Reporter contact information
+- Original crisis descriptions
 - Duplicate similarity score
+- Primary report identification
 - Incident activity timeline
+
+This allows emergency operators to inspect individual citizen reports while managing them as one operational incident.
 
 ### Crisis Status Management
 
-Emergency operators can update incident status.
+Emergency operators can update the response status of a crisis.
 
-Supported statuses:
+Supported statuses are:
 
-- Pending
-- In Review
-- Assigned
-- Resolved
-- Rejected
+- `pending`
+- `in_review`
+- `assigned`
+- `resolved`
+- `rejected`
 
-Updating an incident synchronizes the status of all linked reports.
+Updating an incident status synchronizes the status of reports linked to the same incident.
 
 ### Activity Timeline
 
-The system records important report events including:
+The system records important report events.
+
+Tracked activities include:
 
 - Report creation
 - Status changes
 
-Each activity contains timestamps and status transition information.
+Activity records contain:
+
+- Action type
+- Previous status
+- New status
+- Timestamp
+
+This creates an operational audit history for crisis reports.
 
 ### Real-Time Analytics
 
-The command dashboard provides operational statistics including:
+The CrisisDesk AI command dashboard provides live operational intelligence.
+
+Dashboard statistics include:
 
 - Total reports
 - Critical reports
 - Possible duplicate reports
 - Pending reports
 - Resolved reports
+
+Analytics visualizations include:
+
 - Category breakdown
 - Response status distribution
 - Urgency distribution
+
+The dashboard automatically refreshes to display updated crisis intelligence.
 
 ### Advanced Search and Filtering
 
@@ -136,177 +190,48 @@ Reports can be searched and filtered using:
 - Creation time ordering
 - AI confidence ordering
 
-## Technology Stack
+These tools allow emergency operators to quickly identify relevant reports during high-volume crisis situations.
 
-### Backend
+## System Architecture
 
-- Python
-- Django
-- Django REST Framework
-
-### AI Processing
-
-- AI-powered report classification
-- Semantic report similarity analysis
-
-### Frontend
-
-- HTML5
-- CSS3
-- JavaScript
-
-### Database
-
-- SQLite
-
-## System Workflow
-
-1. A citizen submits a crisis report.
-2. The backend validates the report.
-3. AI analyzes the crisis description.
-4. The report is classified by category and urgency.
-5. AI generates a concise summary.
-6. AI recommends an emergency response action.
-7. Duplicate detection compares the report with existing reports.
-8. Similar reports are linked to the same incident.
-9. The incident appears in the live crisis queue.
-10. Emergency operators update the response status.
-11. Status changes are recorded in the activity timeline.
-12. Real-time analytics update automatically.
-
-## API Endpoints
-
-### Reports
-
-`GET /api/reports`
-
-Retrieve crisis reports with pagination, search, filtering, and ordering.
-
-`POST /api/reports`
-
-Submit a new crisis report for AI processing.
-
-`GET /api/reports/<report_id>`
-
-Retrieve a specific report.
-
-`DELETE /api/reports/<report_id>`
-
-Delete a report.
-
-### Report Status
-
-`PATCH /api/reports/<report_id>/status`
-
-Update the status of an individual report.
-
-### Incident Status
-
-`PATCH /api/incidents/<incident_id>/status`
-
-Update the status of every report linked to an incident.
-
-### Analytics
-
-`GET /api/reports/stats/summary`
-
-Retrieve real-time crisis analytics.
-
-## Example Report Submission
-
-```json
-{
-    "name": "Karim",
-    "contact": "01800000000",
-    "location": "Dhaka Mirpur 10",
-    "description": "A bus has overturned near Mirpur 10. Several passengers are injured and emergency medical assistance is urgently needed.",
-    "language": "en"
-}
-```
-
-The AI automatically generates the category, urgency, summary, suggested action, and confidence score.
-
-## Search Example
+CrisisDesk AI follows a modular service-oriented Django backend architecture.
 
 ```text
-GET /api/reports?search=mirpur
-```
-
-## Combined Filtering Example
-
-```text
-GET /api/reports?category=accident&search=mirpur&start_date=2026-07-12
-```
-
-## Running the Project
-
-Clone the repository:
-
-```bash
-git clone <repository-url>
-cd CrisisDesk-AI
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv venv
-```
-
-Activate the virtual environment.
-
-Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Configure required environment variables in a `.env` file.
-
-Run database migrations:
-
-```bash
-python manage.py migrate
-```
-
-Start the development server:
-
-```bash
-python manage.py runserver
-```
-
-Open:
-
-```text
-http://127.0.0.1:8000/
-```
-
-## Security
-
-Sensitive configuration and API credentials are stored using environment variables.
-
-The `.env` file is excluded from Git version control.
-
-## Future Scope
-
-Future versions of CrisisDesk AI could integrate:
-
-- Emergency service dispatch systems
-- Geographic incident visualization
-- SMS and mobile emergency reporting
-- Multilingual crisis processing
-- Real-time government emergency feeds
-- Predictive crisis intelligence
-- Role-based emergency operator authentication
-
-## Project Vision
-
-CrisisDesk AI demonstrates how artificial intelligence can convert fragmented emergency reports into structured, actionable crisis intelligence.
-
-The goal is to help response teams identify critical incidents faster, reduce duplicate operational effort, and make better emergency response decisions.
+Citizen / Crisis Reporter
+            |
+            v
+     Crisis Report UI
+            |
+            v
+      Django REST API
+            |
+            v
+     Request Validation
+            |
+            v
+    AI Processing Service
+            |
+            +---------------------------+
+            |                           |
+            v                           v
+ Crisis Classification          Urgency Detection
+ Summary Generation             Suggested Action
+            |
+            v
+ Duplicate Detection Service
+            |
+            v
+    Incident Clustering
+            |
+            v
+      Persistent Database
+            |
+            +---------------------------+
+            |                           |
+            v                           v
+      Analytics API             Crisis Queue API
+            |                           |
+            +-------------+-------------+
+                          |
+                          v
+              Crisis Command Dashboard
