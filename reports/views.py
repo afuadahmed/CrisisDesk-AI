@@ -1,20 +1,22 @@
+from django.db.models import Count
+
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.pagination import PageNumberPagination
-from django.shortcuts import get_object_or_404, render
-from django.db.models import Count
 
 from .models import Report, ReportActivity
 from .serializers import ReportSerializer
 from .services.ai_service import classify_report
 from .services.duplicate_service import detect_duplicate
 
+
 class ReportPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 100
-    
+
+
 class ReportListCreateView(APIView):
 
     def get(self, request):
@@ -25,7 +27,7 @@ class ReportListCreateView(APIView):
         report_status = request.query_params.get("status")
         ordering = request.query_params.get(
             "ordering",
-            "-created_at"
+            "-created_at",
         )
 
         if category:
@@ -50,13 +52,17 @@ class ReportListCreateView(APIView):
         reports = reports.order_by(ordering)
 
         paginator = ReportPagination()
+
         page = paginator.paginate_queryset(
             reports,
             request,
-            view=self
+            view=self,
         )
 
-        serializer = ReportSerializer(page, many=True)
+        serializer = ReportSerializer(
+            page,
+            many=True,
+        )
 
         return paginator.get_paginated_response(
             {
@@ -66,10 +72,11 @@ class ReportListCreateView(APIView):
         )
 
     def post(self, request):
-        serializer = ReportSerializer(data=request.data)
+        serializer = ReportSerializer(
+            data=request.data
+        )
 
         if not serializer.is_valid():
-            print("SERIALIZER ERRORS:", serializer.errors)
             return Response(
                 {
                     "success": False,
@@ -85,13 +92,22 @@ class ReportListCreateView(APIView):
             ai_result = classify_report(
                 description=validated_data["description"],
                 location=validated_data["location"],
-                language=validated_data.get("language", "unknown"),
+                language=validated_data.get(
+                    "language",
+                    "unknown",
+                ),
             )
-        except Exception:
+
+        except Exception as error:
+            print("AI CLASSIFICATION ERROR:", error)
+
             return Response(
                 {
                     "success": False,
-                    "message": "AI classification failed. Please try again.",
+                    "message": (
+                        "AI classification failed. "
+                        "Please try again."
+                    ),
                 },
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
@@ -107,28 +123,43 @@ class ReportListCreateView(APIView):
             contact=validated_data.get("contact", ""),
             location=validated_data["location"],
             description=validated_data["description"],
-            language=validated_data.get("language", "unknown"),
+            language=validated_data.get(
+                "language",
+                "unknown",
+            ),
             category=ai_result["category"],
             urgency=ai_result["urgency"],
             summary=ai_result["summary"],
             suggested_action=ai_result["suggestedAction"],
             confidence=ai_result["confidence"],
-            possible_duplicate=duplicate_result["possible_duplicate"],
-            duplicate_similarity=duplicate_result["similarity_score"],
-            matched_report=duplicate_result["matched_report"],
+            possible_duplicate=duplicate_result[
+                "possible_duplicate"
+            ],
+            duplicate_similarity=duplicate_result[
+                "similarity_score"
+            ],
+            matched_report=duplicate_result[
+                "matched_report"
+            ],
         )
 
-        if report.possible_duplicate and report.matched_report:
+        if (
+            report.possible_duplicate
+            and report.matched_report
+        ):
             incident_root = (
                 report.matched_report.incident
                 or report.matched_report
             )
 
             report.incident = incident_root
+
         else:
             report.incident = report
 
-        report.save(update_fields=["incident"])
+        report.save(
+            update_fields=["incident"]
+        )
 
         ReportActivity.objects.create(
             report=report,
@@ -136,7 +167,9 @@ class ReportListCreateView(APIView):
             new_status=report.status,
         )
 
-        response_serializer = ReportSerializer(report)
+        response_serializer = ReportSerializer(
+            report
+        )
 
         return Response(
             {
@@ -145,14 +178,30 @@ class ReportListCreateView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
-    
+
+
 class ReportDetailView(APIView):
 
+    def get_report(self, report_id):
+        try:
+            return Report.objects.get(
+                id=report_id
+            )
+
+        except Report.DoesNotExist:
+            return None
+
     def get(self, request, report_id):
-        report = get_object_or_404(
-            Report,
-            id=report_id
-        )
+        report = self.get_report(report_id)
+
+        if report is None:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Report not found.",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         serializer = ReportSerializer(report)
 
@@ -164,14 +213,47 @@ class ReportDetailView(APIView):
             status=status.HTTP_200_OK,
         )
 
+    def delete(self, request, report_id):
+        report = self.get_report(report_id)
+
+        if report is None:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Report not found.",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        report.delete()
+
+        return Response(
+            {
+                "success": True,
+                "message": (
+                    "Report deleted successfully."
+                ),
+            },
+            status=status.HTTP_200_OK,
+        )
+
 
 class ReportStatusUpdateView(APIView):
 
     def patch(self, request, report_id):
-        report = get_object_or_404(
-            Report,
-            id=report_id
-        )
+        try:
+            report = Report.objects.get(
+                id=report_id
+            )
+
+        except Report.DoesNotExist:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Report not found.",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         new_status = request.data.get("status")
 
@@ -193,7 +275,13 @@ class ReportStatusUpdateView(APIView):
         old_status = report.status
 
         report.status = new_status
-        report.save(update_fields=["status", "updated_at"])
+
+        report.save(
+            update_fields=[
+                "status",
+                "updated_at",
+            ]
+        )
 
         if old_status != new_status:
             ReportActivity.objects.create(
@@ -212,7 +300,8 @@ class ReportStatusUpdateView(APIView):
             },
             status=status.HTTP_200_OK,
         )
-    
+
+
 class AnalyticsSummaryView(APIView):
 
     def get(self, request):
@@ -224,27 +313,41 @@ class AnalyticsSummaryView(APIView):
             urgency="critical"
         ).count()
 
+        pending_reports = reports.filter(
+            status="pending"
+        ).count()
+
+        resolved_reports = reports.filter(
+            status="resolved"
+        ).count()
+
         possible_duplicates = reports.filter(
             possible_duplicate=True
         ).count()
 
         category_counts = {
             item["category"]: item["count"]
-            for item in reports.values("category").annotate(
+            for item in reports.values(
+                "category"
+            ).annotate(
                 count=Count("id")
             )
         }
 
         status_counts = {
             item["status"]: item["count"]
-            for item in reports.values("status").annotate(
+            for item in reports.values(
+                "status"
+            ).annotate(
                 count=Count("id")
             )
         }
 
         urgency_counts = {
             item["urgency"]: item["count"]
-            for item in reports.values("urgency").annotate(
+            for item in reports.values(
+                "urgency"
+            ).annotate(
                 count=Count("id")
             )
         }
@@ -255,6 +358,10 @@ class AnalyticsSummaryView(APIView):
                 "data": {
                     "totalReports": total_reports,
                     "criticalReports": critical_reports,
+                    "pendingReports": pending_reports,
+                    "resolvedReports": resolved_reports,
+                    "categoryBreakdown": category_counts,
+                    "urgencyBreakdown": urgency_counts,
                     "possibleDuplicates": possible_duplicates,
                     "categories": category_counts,
                     "statuses": status_counts,
@@ -263,10 +370,10 @@ class AnalyticsSummaryView(APIView):
             },
             status=status.HTTP_200_OK,
         )
-def dashboard_view(request):
-    return render(request, "dashboard.html")
+
 
 class IncidentStatusUpdateView(APIView):
+
     def patch(self, request, incident_id):
         new_status = request.data.get("status")
 
@@ -283,6 +390,7 @@ class IncidentStatusUpdateView(APIView):
                 {
                     "success": False,
                     "message": "Invalid status.",
+                    "validStatuses": valid_statuses,
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -309,6 +417,7 @@ class IncidentStatusUpdateView(APIView):
                 continue
 
             report.status = new_status
+
             report.save(
                 update_fields=[
                     "status",
@@ -328,7 +437,9 @@ class IncidentStatusUpdateView(APIView):
         return Response(
             {
                 "success": True,
-                "message": "Incident status updated successfully.",
+                "message": (
+                    "Incident status updated successfully."
+                ),
                 "data": {
                     "incidentId": str(incident_id),
                     "status": new_status,

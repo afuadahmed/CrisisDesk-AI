@@ -32,23 +32,55 @@ let loadedIncidents = [];
 async function loadAnalytics() {
     try {
         const response = await fetch(
-            "/api/analytics/summary"
+            "/api/reports/stats/summary"
         );
 
         const result = await response.json();
 
-        if (!result.success) {
-            return;
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+            throw new Error(
+                "Failed to load analytics."
+            );
         }
 
+        const data = result.data;
+
         totalReports.textContent =
-            result.data.totalReports;
+            data.totalReports ?? 0;
 
         criticalReports.textContent =
-            result.data.criticalReports;
+            data.criticalReports ?? 0;
 
         possibleDuplicates.textContent =
-            result.data.possibleDuplicates;
+            data.possibleDuplicates ?? 0;
+
+        document.getElementById(
+            "pendingReports"
+        ).textContent =
+            data.pendingReports ?? 0;
+
+        document.getElementById(
+            "resolvedReports"
+        ).textContent =
+            data.resolvedReports ?? 0;
+
+        renderAnalyticsBreakdown(
+            "categoryAnalytics",
+            data.categoryBreakdown
+        );
+
+        renderAnalyticsBreakdown(
+            "statusAnalytics",
+            data.statuses
+        );
+
+        renderAnalyticsBreakdown(
+            "urgencyAnalytics",
+            data.urgencyBreakdown
+        );
 
     } catch (error) {
         console.error(
@@ -56,6 +88,95 @@ async function loadAnalytics() {
             error
         );
     }
+}
+
+
+function renderAnalyticsBreakdown(
+    containerId,
+    breakdown
+) {
+
+    const container =
+        document.getElementById(
+            containerId
+        );
+
+    if (!container) {
+        return;
+    }
+
+
+    const entries =
+        Object.entries(
+            breakdown || {}
+        );
+
+
+    if (entries.length === 0) {
+
+        container.innerHTML = `
+            <p class="analytics-empty">
+                No analytics data available.
+            </p>
+        `;
+
+        return;
+    }
+
+
+    const maximumValue =
+        Math.max(
+            ...entries.map(
+                ([, value]) => value
+            ),
+            1
+        );
+
+
+    container.innerHTML =
+        entries
+            .map(
+                ([label, value]) => {
+
+                    const percentage =
+                        (
+                            value /
+                            maximumValue
+                        ) * 100;
+
+
+                    return `
+                        <div class="analytics-row">
+
+                            <div class="analytics-row-header">
+
+                                <span>
+                                    ${escapeHtml(
+                                        formatStatus(label)
+                                    )}
+                                </span>
+
+                                <strong>
+                                    ${value}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="analytics-bar">
+
+                                <div
+                                    class="analytics-bar-fill"
+                                    style="width: ${percentage}%"
+                                ></div>
+
+                            </div>
+
+                        </div>
+                    `;
+                }
+            )
+            .join("");
 }
 
 

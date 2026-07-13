@@ -13,7 +13,7 @@
 
     <title>CrisisDesk AI</title>
 
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=4">
 </head>
 
 <body>
@@ -53,39 +53,155 @@
 
         <section class="stats-grid">
 
-            <div class="stat-card">
+    <div class="stat-card">
 
-                <p>Total Reports</p>
+        <p>Total Reports</p>
 
-                <h2 id="totalReports">
-                    0
-                </h2>
+        <h2 id="totalReports">
+            0
+        </h2>
 
+        <span class="stat-description">
+            Incoming crisis reports
+        </span>
+
+    </div>
+
+
+    <div class="stat-card critical-card">
+
+        <p>Critical Reports</p>
+
+        <h2 id="criticalReports">
+            0
+        </h2>
+
+        <span class="stat-description">
+            Immediate response required
+        </span>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <p>Possible Duplicates</p>
+
+        <h2 id="possibleDuplicates">
+            0
+        </h2>
+
+        <span class="stat-description">
+            AI-detected similar reports
+        </span>
+
+    </div>
+
+
+    <div class="stat-card pending-card">
+
+        <p>Pending Reports</p>
+
+        <h2 id="pendingReports">
+            0
+        </h2>
+
+        <span class="stat-description">
+            Awaiting crisis response
+        </span>
+
+    </div>
+
+
+    <div class="stat-card resolved-card">
+
+        <p>Resolved Reports</p>
+
+        <h2 id="resolvedReports">
+            0
+        </h2>
+
+        <span class="stat-description">
+            Successfully handled reports
+        </span>
+
+    </div>
+
+</section>
+
+
+<section class="analytics-section">
+
+    <div class="analytics-header">
+
+        <div>
+
+            <p class="analytics-label">
+                CRISIS INTELLIGENCE
+            </p>
+
+            <h2>
+                Real-Time Analytics
+            </h2>
+
+            <p>
+                Live operational intelligence generated from crisis reports.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="analytics-grid">
+
+        <div class="analytics-card">
+
+            <h3>
+                Category Breakdown
+            </h3>
+
+            <div id="categoryAnalytics">
+                <p class="analytics-empty">
+                    Loading analytics...
+                </p>
             </div>
 
+        </div>
 
-            <div class="stat-card critical-card">
 
-                <p>Critical Reports</p>
+        <div class="analytics-card">
 
-                <h2 id="criticalReports">
-                    0
-                </h2>
+            <h3>
+                Response Status
+            </h3>
 
+            <div id="statusAnalytics">
+                <p class="analytics-empty">
+                    Loading analytics...
+                </p>
             </div>
 
+        </div>
 
-            <div class="stat-card">
 
-                <p>Possible Duplicates</p>
+        <div class="analytics-card">
 
-                <h2 id="possibleDuplicates">
-                    0
-                </h2>
+            <h3>
+                Urgency Distribution
+            </h3>
 
+            <div id="urgencyAnalytics">
+                <p class="analytics-empty">
+                    Loading analytics...
+                </p>
             </div>
 
-        </section>
+        </div>
+
+    </div>
+
+</section>
 
 
         <section class="report-section">
@@ -429,7 +545,7 @@
 </div>
 
 
-<script src="{% static 'js/dashboard.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}?v=4"></script>
 
 </body>
 
