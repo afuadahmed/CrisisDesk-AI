@@ -265,3 +265,75 @@ class AnalyticsSummaryView(APIView):
         )
 def dashboard_view(request):
     return render(request, "dashboard.html")
+
+class IncidentStatusUpdateView(APIView):
+    def patch(self, request, incident_id):
+        new_status = request.data.get("status")
+
+        valid_statuses = [
+            "pending",
+            "in_review",
+            "assigned",
+            "resolved",
+            "rejected",
+        ]
+
+        if new_status not in valid_statuses:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Invalid status.",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        reports = Report.objects.filter(
+            incident_id=incident_id
+        )
+
+        if not reports.exists():
+            return Response(
+                {
+                    "success": False,
+                    "message": "Incident not found.",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        updated_count = 0
+
+        for report in reports:
+            old_status = report.status
+
+            if old_status == new_status:
+                continue
+
+            report.status = new_status
+            report.save(
+                update_fields=[
+                    "status",
+                    "updated_at",
+                ]
+            )
+
+            ReportActivity.objects.create(
+                report=report,
+                action="status_changed",
+                old_status=old_status,
+                new_status=new_status,
+            )
+
+            updated_count += 1
+
+        return Response(
+            {
+                "success": True,
+                "message": "Incident status updated successfully.",
+                "data": {
+                    "incidentId": str(incident_id),
+                    "status": new_status,
+                    "updatedReports": updated_count,
+                },
+            },
+            status=status.HTTP_200_OK,
+        )

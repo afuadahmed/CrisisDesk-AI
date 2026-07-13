@@ -360,10 +360,10 @@ function createIncidentCard(incident) {
 
                 <select
                     class="status-select"
-                    onchange="updateReportStatus(
-                        '${report.id}',
-                        this.value
-                    )"
+                    onchange="updateIncidentStatus(
+    '${incident.incidentId}',
+    this.value
+)"
                 >
 
                     ${createStatusOptions(
@@ -496,6 +496,62 @@ async function updateReportStatus(
 
         alert(
             "Unable to update report status."
+        );
+    }
+}
+
+async function updateIncidentStatus(
+    incidentId,
+    newStatus
+) {
+
+    try {
+
+        const response = await fetch(
+            `/api/incidents/${incidentId}/status`,
+            {
+                method: "PATCH",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    status: newStatus
+                })
+            }
+        );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                result.message ||
+                "Incident status update failed."
+            );
+
+            return;
+        }
+
+
+        await loadDashboard();
+
+
+    } catch (error) {
+
+        console.error(
+            "Incident status update error:",
+            error
+        );
+
+
+        alert(
+            "Unable to update incident status."
         );
     }
 }

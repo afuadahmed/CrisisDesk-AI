@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import (
     AnalyticsSummaryView,
+    IncidentStatusUpdateView,
     ReportDetailView,
     ReportListCreateView,
     ReportStatusUpdateView,
@@ -30,4 +31,10 @@ urlpatterns = [
     AnalyticsSummaryView.as_view(),
     name="analytics-summary",
     ),
+
+path(
+    "incidents/<uuid:incident_id>/status",
+    IncidentStatusUpdateView.as_view(),
+    name="incident-status-update",
+),
 ]
